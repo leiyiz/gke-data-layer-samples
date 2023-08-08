@@ -23,7 +23,7 @@ provider "google" {
 resource "google_container_cluster" "ml_cluster" {
   name     = var.cluster_name
   location = var.zone
-  count    = var.enable_autopilot == false ? 1 : 0
+  count    = 1
   # remove_default_node_pool = true
   initial_node_count = 1
 
@@ -31,12 +31,12 @@ resource "google_container_cluster" "ml_cluster" {
     enable_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
   }
 
-  monitoring_config {
-    enable_components = ["SYSTEM_COMPONENTS"]
-    managed_prometheus {
-      enabled = "true"
-    }
-  }
+  # monitoring_config {
+  #   enable_components = ["SYSTEM_COMPONENTS"]
+  #   managed_prometheus {
+  #     enabled = "true"
+  #   }
+  # }
 
   workload_identity_config {
     workload_pool = "${var.project_id}.svc.id.goog"
@@ -52,9 +52,9 @@ resource "google_container_cluster" "ml_cluster" {
 resource "google_container_node_pool" "gpu_pool" {
   name       = "gpu-pool"
   location   = var.zone
-  cluster    = var.enable_autopilot == false ? google_container_cluster.ml_cluster[0].name : null
+  cluster    = google_container_cluster.ml_cluster[0].name
   node_count = var.num_gpu_nodes
-  count      = var.enable_autopilot == false ? 1 : 0
+  count      = 1
   autoscaling {
     min_node_count = "1"
     max_node_count = "3"
@@ -76,7 +76,7 @@ resource "google_container_node_pool" "gpu_pool" {
     ]
 
     labels = {
-      "cloud.google.com/gke-profile" = "ray"
+      # "cloud.google.com/gke-profile" = "ray"
       env = var.project_id
     }
 
