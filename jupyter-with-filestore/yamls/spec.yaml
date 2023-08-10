@@ -1,0 +1,100 @@
+# Tensorflow/Jupyter StatefulSet
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tensorflow
+spec:
+  selector:
+    matchLabels:
+      pod: tensorflow-pod
+  serviceName: tensorflow
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        pod: tensorflow-pod
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-accelerator: nvidia-tesla-t4
+        # cloud.google.com/gke-spot: "true"
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: tensorflow-container
+        image: tensorflow/tensorflow:latest-gpu-jupyter
+        volumeMounts:
+        - name: tensorflow-pvc
+          mountPath: /tf/saved
+        resources:
+            limits:
+              nvidia.com/gpu: "1"
+              ephemeral-storage: 10Gi
+              memory: 10Gi
+            requests:
+              nvidia.com/gpu: "1"
+              ephemeral-storage: 10Gi
+              memory: 10Gi
+      volumes:
+        - name: tensorflow-pvc
+          persistentVolumeClaim:
+            claimName: tensorflow-pvc
+## Optional: override and set your own token
+#        env:
+#          - name: JUPYTER_TOKEN
+#            value: "jupyter"
+  volumeClaimTemplates:
+  - metadata:
+      name: tensorflow-pvc
+    spec:
+      storageClassName: premium-rwx
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 3Ti
+---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: csi-filestore
+# provisioner: filestore.csi.storage.gke.io
+# parameters:
+#   tier: premium
+# allowVolumeExpansion: true
+# ---
+# kind: PersistentVolumeClaim
+# apiVersion: v1
+# metadata:
+#   name: tensorflow-pvc
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   storageClassName: premium-rwx
+#   resources:
+#     requests:
+#       storage: 3Ti
+---
+# Headless service for the above StatefulSet
+apiVersion: v1
+kind: Service
+metadata:
+  name: tensorflow
+spec:
+  ports:
+  - port: 8888
+  clusterIP: None
+  selector:
+    pod: tensorflow-pod
+---
+# External service
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: tensorflow-jupyter
+spec:
+  ports:
+  - protocol: "TCP"
+    port: 80
+    targetPort: 8888
+  selector:
+    pod: tensorflow-pod
+  type: LoadBalancer
