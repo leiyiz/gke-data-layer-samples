@@ -52,27 +52,6 @@ spec:
         requests:
           storage: 3Ti
 ---
-# apiVersion: storage.k8s.io/v1
-# kind: StorageClass
-# metadata:
-#   name: csi-filestore
-# provisioner: filestore.csi.storage.gke.io
-# parameters:
-#   tier: premium
-# allowVolumeExpansion: true
-# ---
-# kind: PersistentVolumeClaim
-# apiVersion: v1
-# metadata:
-#   name: tensorflow-pvc
-# spec:
-#   accessModes:
-#     - ReadWriteMany
-#   storageClassName: premium-rwx
-#   resources:
-#     requests:
-#       storage: 3Ti
----
 # Headless service for the above StatefulSet
 apiVersion: v1
 kind: Service
