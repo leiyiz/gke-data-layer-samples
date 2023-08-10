@@ -39,7 +39,7 @@ variable "cluster_name" {
 variable "namespace" {
   type        = string
   description = "Kubernetes namespace where resources are deployed"
-  default     = "ray"
+  default     = "example"
 }
 
 variable "num_gpu_nodes" {

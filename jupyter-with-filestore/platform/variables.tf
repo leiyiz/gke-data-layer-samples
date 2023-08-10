@@ -33,10 +33,10 @@ variable "zone" {
 variable "cluster_name" {
   type        = string
   description = "GKE cluster name"
-  default     = "ml-cluster"
+  default     = "ml-cluster-fs"
 }
 
 variable "num_gpu_nodes_in_cluster" {
   description = "Number of GPU nodes in the cluster"
-  default     = 2
+  default     = 1
 }

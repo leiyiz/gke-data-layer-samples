@@ -23,8 +23,8 @@ provider "google" {
 resource "google_container_cluster" "ml_cluster" {
   name     = var.cluster_name
   location = var.zone
+  min_master_version = 1.27
   count    = 1
-  # remove_default_node_pool = true
   initial_node_count = 1
 
   logging_config {
@@ -37,10 +37,6 @@ resource "google_container_cluster" "ml_cluster" {
       enabled = "true"
     }
   }
-
-  # workload_identity_config {
-  #   workload_pool = "${var.project_id}.svc.id.goog"
-  # }
 
   addons_config {
     gcp_filestore_csi_driver_config {
@@ -57,7 +53,7 @@ resource "google_container_node_pool" "gpu_pool" {
   count      = 1
   autoscaling {
     min_node_count = "1"
-    max_node_count = "3"
+    max_node_count = "2"
   }
 
   management {
@@ -76,13 +72,11 @@ resource "google_container_node_pool" "gpu_pool" {
     ]
 
     labels = {
-      "cloud.google.com/gke-profile" = "ray"
+      "cloud.google.com/gke-profile" = "filestorecsi"
       env = var.project_id
     }
 
-    # preemptible  = true
     image_type   = "cos_containerd"
-    # machine_type = "a2-highgpu-1g"
     machine_type = "n1-standard-16"
     tags         = ["gke-node", "${var.project_id}-gke"]
 
