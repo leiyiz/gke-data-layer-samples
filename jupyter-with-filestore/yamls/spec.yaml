@@ -33,12 +33,12 @@ spec:
         resources:
             limits:
               nvidia.com/gpu: "1"
-              ephemeral-storage: 10Gi
-              memory: 10Gi
+              ephemeral-storage: 30Gi
+              memory: 30Gi
             requests:
               nvidia.com/gpu: "1"
-              ephemeral-storage: 10Gi
-              memory: 10Gi
+              ephemeral-storage: 30Gi
+              memory: 30Gi
       volumes:
         - name: tensorflow-pvc
           persistentVolumeClaim:
