@@ -1,0 +1,77 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-fs-1
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard-rwx
+  resources:
+    requests:
+      storage: 1Ti
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bucket-to-filestore
+data:
+  bucket-to-filestore.py: |
+    import shutil
+    shutil.copytree("/tf/bucket", "/tf/filestore", dirs_exist_ok=True)
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dataloader
+  namespace: example
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dataloader
+  template:
+    metadata:
+      labels:
+        app: dataloader
+      annotations:
+        gke-gcsfuse/volumes: "true"
+    spec:
+      serviceAccountName: gcsfuse-ksa
+      containers:
+      - name: writer
+        image: tensorflow/tensorflow:latest-gpu-jupyter
+        # command: ["python3", "/bucket-to-filestore.py"]
+        lifecycle:
+          postStart:
+            exec:
+              command: ["python3", "/bucket-to-filestore.py"]
+        # image: python:slim-bullseye
+        volumeMounts:
+        - name: gcsvolume
+          mountPath: /tf/bucket
+        - name: pvc-fs
+          mountPath: /tf/filestore
+        - mountPath: /bucket-to-filestore.py
+          name: bucket-to-filestore
+          readOnly: true
+          subPath: bucket-to-filestore.py
+        resources:
+            limits:
+              ephemeral-storage: 10Gi
+              memory: 10Gi
+            requests:
+              ephemeral-storage: 10Gi
+              memory: 10Gi
+      volumes:
+      - name: gcsvolume
+        csi:
+          driver: gcsfuse.csi.storage.gke.io
+          volumeAttributes:
+            bucketName: test-gcsfuse-1
+      - name: pvc-fs
+        persistentVolumeClaim:
+          claimName: pvc-fs-1
+      - name: bucket-to-filestore
+        configMap:
+          name: bucket-to-filestore
+          defaultMode: 0777
