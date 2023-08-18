@@ -63,6 +63,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tensorflow
+  namespace: example
 spec:
   ports:
   - port: 8888
@@ -75,6 +76,7 @@ apiVersion: "v1"
 kind: "Service"
 metadata:
   name: tensorflow-jupyter
+  namespace: example
 spec:
   ports:
   - protocol: "TCP"
