@@ -28,10 +28,13 @@ spec:
       - name: tensorflow-container
         securityContext:
           privileged: true
+        #image: tensorflow/tensorflow:latest-gpu-jupyter
         image: tensorflow/tensorflow:2.13.0-gpu-jupyter
         volumeMounts:
         - name: tensorflow-pvc
           mountPath: /tf/saved
+        - name: tensorflow-pvc-fs
+          mountPath: /tf/filestore
         resources:
             limits:
               nvidia.com/gpu: "1"
@@ -47,10 +50,25 @@ spec:
           driver: gcsfuse.csi.storage.gke.io
           volumeAttributes:
             bucketName: test-gcsfuse-1
+      - name: tensorflow-pvc-fs
+        persistentVolumeClaim:
+          claimName: tensorflow-pvc-fs
 ## Optional: override and set your own token
 #        env:
 #          - name: JUPYTER_TOKEN
 #            value: "jupyter"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: tensorflow-pvc-fs
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: premium-rwx
+  resources:
+    requests:
+      storage: 1Ti
 ---
 # Headless service for the above StatefulSet
 apiVersion: v1

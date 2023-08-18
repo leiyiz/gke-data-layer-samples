@@ -47,16 +47,42 @@ spec:
 #        env:
 #          - name: JUPYTER_TOKEN
 #            value: "jupyter"
-  volumeClaimTemplates:
-  - metadata:
-      name: tensorflow-pvc
-    spec:
-      storageClassName: premium-rwx
-      accessModes:
-        - ReadWriteMany
-      resources:
-        requests:
-          storage: 3Ti
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: tensorflow-pvc
+  namespace: example
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: tensorflow-pv
+  resources:
+    requests:
+      storage: 9Ti
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tensorflow-pv
+  annotations:
+    pv.kubernetes.io/provisioned-by: filestore.csi.storage.gke.io
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 9Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+  csi:
+    driver: filestore.csi.storage.gke.io
+    # Modify this to use the zone, filestore instance and share name.
+    volumeHandle: "modeInstance/us-central1-c/test-hs1/vol"
+    volumeAttributes:
+      ip: 10.210.242.194 # Modify this to Pre-provisioned Filestore instance IP
+      volume: vol # Modify this to Pre-provisioned Filestore instance share name
 ---
 # Headless service for the above StatefulSet
 apiVersion: v1
