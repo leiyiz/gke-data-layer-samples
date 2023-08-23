@@ -16,7 +16,7 @@ spec:
         gke-gcsfuse/volumes: "true"
         gke-gcsfuse/cpu-limit: 500m
         gke-gcsfuse/memory-limit: 10Gi
-        gke-gcsfuse/ephemeral-storage-limit: 10Gi
+        gke-gcsfuse/ephemeral-storage-limit: 30Gi
       labels:
         pod: tensorflow-pod
     spec:
@@ -35,11 +35,11 @@ spec:
         resources:
             limits:
               nvidia.com/gpu: "1"
-              ephemeral-storage: 10Gi
+              ephemeral-storage: 30Gi
               memory: 10Gi
             requests:
               nvidia.com/gpu: "1"
-              ephemeral-storage: 10Gi
+              ephemeral-storage: 30Gi
               memory: 10Gi
       volumes:
       - name: tensorflow-pvc
