@@ -85,7 +85,7 @@ resource "google_container_node_pool" "gpu_pool" {
     machine_type = "n1-standard-16"
     tags         = ["gke-node", "${var.project_id}-gke"]
 
-    disk_size_gb = "100"
+    disk_size_gb = "300"
     disk_type    = "pd-ssd"
     metadata = {
       disable-legacy-endpoints = "true"
