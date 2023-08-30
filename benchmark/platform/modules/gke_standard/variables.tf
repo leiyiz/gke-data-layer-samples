@@ -220,7 +220,3 @@ variable "tpu_placement_policy_type" {
   description = "The type of the policy."
   default     = "COMPACT"
 }
-
-
-
-

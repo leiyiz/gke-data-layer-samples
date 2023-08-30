@@ -82,7 +82,7 @@ variable "k8s_service_account" {
 variable "enable_cpu" {
   type        = bool
   description = "Set to true to create CPU node pool"
-  default     = true
+  default     = false
 }
 
 variable "cpu_node_count" {
@@ -139,7 +139,7 @@ variable "cpu_local_nvme_ssd_block_count" {
 variable "enable_gpu" {
   type        = bool
   description = "Set to true to create GPU node pool"
-  default     = true
+  default     = false
 }
 
 variable "gpu_node_count" {
@@ -238,4 +238,3 @@ variable "tpu_placement_policy_type" {
   description = "The type of the policy."
   default     = "COMPACT"
 }
-

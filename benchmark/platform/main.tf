@@ -34,29 +34,23 @@ provider "google-beta" {
 
 provider "kubernetes" {
   host                   = data.google_container_cluster.ml_cluster.endpoint
-  token                  = data.google_client_config.provider.access_token
   cluster_ca_certificate = base64decode(
     data.google_container_cluster.ml_cluster.master_auth[0].cluster_ca_certificate
   )
+  config_path            = "~/.kube/config"
+  config_context         = "gke_${var.project_id}_${data.google_container_cluster.ml_cluster.location}_${var.cluster_name}"
+  config_context_cluster = "gke_${var.project_id}_${data.google_container_cluster.ml_cluster.location}_${var.cluster_name}"
+
 }
 
 provider "kubectl" {
   host                   = data.google_container_cluster.ml_cluster.endpoint
-  token                  = data.google_client_config.provider.access_token
   cluster_ca_certificate = base64decode(
     data.google_container_cluster.ml_cluster.master_auth[0].cluster_ca_certificate
   )
-}
-
-provider "helm" {
-  kubernetes {
-    ##config_path = pathexpand("~/.kube/config")
-    host                   = data.google_container_cluster.ml_cluster.endpoint
-    token                  = data.google_client_config.provider.access_token
-    cluster_ca_certificate = base64decode(
-      data.google_container_cluster.ml_cluster.master_auth[0].cluster_ca_certificate
-    )
-  }
+  config_path            = "~/.kube/config"
+  config_context         = "gke_${var.project_id}_${data.google_container_cluster.ml_cluster.location}_${var.cluster_name}"
+  config_context_cluster = "gke_${var.project_id}_${data.google_container_cluster.ml_cluster.location}_${var.cluster_name}"
 }
 
 module "gke_standard" {
@@ -116,6 +110,7 @@ module "kubernetes" {
   depends_on = [module.gke_standard]
   enable_gpu = var.enable_gpu
   enable_tpu = var.enable_tpu
+  namespace  = var.namespace
 }
 
 module "service_accounts" {
@@ -127,15 +122,3 @@ module "service_accounts" {
   service_account = var.service_account
   gcs_bucket      = var.gcs_bucket
 }
-
-
-
-
-
-
-
-
-
-
-
-
