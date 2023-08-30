@@ -20,203 +20,198 @@ variable "project_id" {
 variable "region" {
   type        = string
   description = "GCP project region"
-  default     = "us-central1"
 }
 
 variable "zone" {
   type        = string
   description = "GCP project zone"
-  default     = "us-central1-c"
 }
 
 # GKE cluster configuration
 variable "cluster_name" {
   type        = string
   description = "GKE cluster name"
-  default     = "ml-perf-cluster"
 }
 
 variable "namespace" {
   type        = string
   description = "Kubernetes namespace where resources are deployed"
-  default     = "perf"
 }
 
 variable "enable_gcs_fuse_csi_driver" {
   type        = bool
   description = "Set to true to enable GCSFuse CSI driver for the cluster"
-  default     = false
+}
+
+variable "workload_metadata_mode" {
+  type        = string
+  description = "Metadata configuration to expose to workloads on the node pool"
 }
 
 variable "enable_gcp_filestore_csi_driver" {
   type        = bool
   description = "Set to true to enable Filestore CSI driver for the cluster"
-  default     = false
 }
 
 variable "enable_gce_persistent_disk_csi_driver" {
   type        = bool
   description = "Set to true to enable Google Compute Engine Persistent Disk Container Storage Interface (CSI) Driver for the cluster"
-  default     = false
 }
 
 # CPU node pool configuration
 variable "enable_cpu" {
   type        = bool
   description = "Set to true to create CPU node pool"
-  default     = false
 }
 
 variable "cpu_node_count" {
+  type        = number
   description = "Number of CPU nodes in the cluster"
-  default     = 1
 }
 
 variable "cpu_min_node_count" {
+  type        = number
   description = "Minimum number of nodes per zone in the CPU NodePool"
-  default     = 1
 }
 
 variable "cpu_max_node_count" {
+  type        = number
   description = "Maximum number of nodes per zone in the CPU NodePool"
-  default     = 3
 }
 
 variable "cpu_auto_repair" {
+  type        = bool
   description = "Whether the nodes will be automatically repaired in the CPU NodePool"
-  default     = false
 }
 
 variable "cpu_auto_upgrade" {
+  type        = bool
   description = "Whether the nodes will be automatically upgraded in the CPU NodePool"
-  default     = false
 }
 
 variable "cpu_machine_type" {
+  type        = string
   description = "The name of a Google Compute Engine machine type in the CPU NodePool"
-  default     = "n1-standard-16"
 }
 
 variable "cpu_disk_size_gb" {
+  type        = number
   description = "Size for node VM boot disks in GB in the CPU NodePool"
-  default     = "100"
 }
 
 variable "cpu_disk_type" {
+  type        = string
   description = "Type of the node VM boot disk in the CPU NodePool"
-  default     = "pd-standard"
 }
 
 variable "cpu_ephemeral_storage_local_ssd_count" {
+  type        = number
   description = "Number of local SSDs to use to back ephemeral storage in the CPU NodePool"
-  default     = "0"
 }
 
 variable "cpu_local_nvme_ssd_block_count" {
+  type        = number
   description = "Number of raw-block local NVMe SSD disks to be attached to each node in the CPU NodePool"
-  default     = "0"
 }
 
 # GPU node pool configuration
 variable "enable_gpu" {
   type        = bool
   description = "Set to true to create GPU node pool"
-  default     = false
 }
 
 variable "gpu_node_count" {
+  type        = number
   description = "Number of GPU nodes in the cluster"
-  default     = 1
 }
 
 variable "gpu_min_node_count" {
+  type        = number
   description = "Minimum number of nodes per zone in the GPU NodePool"
-  default     = 1
 }
 
 variable "gpu_max_node_count" {
+  type        = number
   description = "Maximum number of nodes per zone in the GPU NodePool"
-  default     = 3
 }
 
 variable "gpu_auto_repair" {
+  type        = bool
   description = "Whether the nodes will be automatically repaired in the GPU NodePool"
-  default     = false
 }
 
 variable "gpu_auto_upgrade" {
+  type        = bool
   description = "Whether the nodes will be automatically upgraded in the GPU NodePool"
-  default     = false
 }
 
 variable "gpu_machine_type" {
+  type        = string
   description = "The name of a Google Compute Engine machine type in the GPU NodePool"
-  default     = "n1-standard-16"
 }
 
 variable "gpu_guest_accelerator_type" {
+  type        = string
   description = "The type of accelerator cards attached to the instance in the GPU NodePool"
-  default     = "nvidia-tesla-t4"
 }
 
 variable "gpu_guest_accelerator_count" {
+  type        = number
   description = "The number of the guest accelerator cards exposed to instances in the GPU NodePool"
-  default     = "1"
 }
 
 variable "gpu_disk_size_gb" {
+  type        = number
   description = "Size for node VM boot disks in GB in the GPU NodePool"
-  default     = "100"
 }
 
 variable "gpu_disk_type" {
+  type        = string
   description = "Type of the node VM boot disk in the GPU NodePool"
-  default     = "pd-standard"
 }
 
 variable "gpu_ephemeral_storage_local_ssd_count" {
+  type        = number
   description = "Number of local SSDs to use to back ephemeral storage in the GPU NodePool"
-  default     = "0"
 }
 
 variable "gpu_local_nvme_ssd_block_count" {
+  type        = number
   description = "Number of raw-block local NVMe SSD disks to be attached to each node in the GPU NodePool"
-  default     = "0"
 }
 
 # TPU node pool configuration
 variable "enable_tpu" {
   type        = bool
   description = "Set to true to create TPU node pool"
-  default     = false
 }
 
 variable "tpu_node_count" {
+  type        = number
   description = "Number of TPU nodes in the cluster"
-  default     = 1
 }
 
 variable "tpu_machine_type" {
+  type        = string
   description = "The name of a Google Compute Engine machine type in the TPU NodePool"
-  default     = "ct4p-hightpu-4t"
 }
 
 variable "tpu_ephemeral_storage_local_ssd_count" {
+  type        = number
   description = "Number of local SSDs to use to back ephemeral storage in the TPU NodePool"
-  default     = "0"
 }
 
 variable "tpu_local_nvme_ssd_block_count" {
+  type        = number
   description = "Number of raw-block local NVMe SSD disks to be attached to each node in the TPU NodePool"
-  default     = "0"
 }
 
 variable "tpu_placement_policy_tpu_topology" {
+  type        = string
   description = "The TPU placement topology for pod slice node pool"
-  default     = "2x2x1"
 }
 
 variable "tpu_placement_policy_type" {
+  type        = string
   description = "The type of the policy."
-  default     = "COMPACT"
 }

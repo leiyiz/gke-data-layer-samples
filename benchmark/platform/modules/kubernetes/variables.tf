@@ -15,17 +15,14 @@
 variable "namespace" {
   type        = string
   description = "Kubernetes namespace where resources are deployed"
-  default     = "perf"
 }
 
 variable "enable_gpu" {
   type = bool
   description = "Set to true to create GPU node pool, only one accelerator pool (GPU or TPU) will be created"
-  default = false
 }
 
 variable "enable_tpu" {
   type = bool
   description = "Set to true to create TPU node pool, only one accelerator pool (GPU or TPU) will be created"
-  default = false
 }

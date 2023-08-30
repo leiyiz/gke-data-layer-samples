@@ -82,7 +82,21 @@ resource "google_container_node_pool" "cpu_pool" {
   }
 
   node_config {
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/trace.append",
+      "https://www.googleapis.com/auth/service.management.readonly",
+      "https://www.googleapis.com/auth/servicecontrol",
+    ]
+
+    labels = {
+      env = var.project_id
+    }
+    image_type   = "cos_containerd"
     machine_type = var.cpu_machine_type
+    tags         = ["gke-node", "${var.project_id}-gke"]
 
     disk_size_gb = var.cpu_disk_size_gb
     disk_type    = var.cpu_disk_type
@@ -92,6 +106,13 @@ resource "google_container_node_pool" "cpu_pool" {
     }
     local_nvme_ssd_block_config {
       local_ssd_count = var.cpu_local_nvme_ssd_block_count
+    }
+
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+    workload_metadata_config {
+      mode = var.workload_metadata_mode
     }
   }
 }
@@ -132,7 +153,6 @@ resource "google_container_node_pool" "gpu_pool" {
       count = var.gpu_guest_accelerator_count
     }
 
-    # preemptible  = true
     image_type   = "cos_containerd"
     machine_type = var.gpu_machine_type
     tags         = ["gke-node", "${var.project_id}-gke"]
@@ -151,7 +171,7 @@ resource "google_container_node_pool" "gpu_pool" {
       disable-legacy-endpoints = "true"
     }
     workload_metadata_config {
-      mode = "GKE_METADATA"
+      mode = var.workload_metadata_mode
     }
   }
 }
@@ -184,6 +204,10 @@ resource "google_container_node_pool" "tpu_pool" {
     }
     local_nvme_ssd_block_config {
       local_ssd_count = var.tpu_local_nvme_ssd_block_count
+    }
+
+    workload_metadata_config {
+      mode = var.workload_metadata_mode
     }
   }
 

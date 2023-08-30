@@ -20,19 +20,16 @@ variable "project_id" {
 variable "namespace" {
   type        = string
   description = "Kubernetes namespace where resources are deployed"
-  default     = "perf"
 }
 
 variable "service_account" {
   type        = string
   description = "Google Cloud IAM service account for authenticating with GCP services"
-  default     = "ml-perf-sa"
 }
 
 variable "k8s_service_account" {
   type        = string
   description = "k8s service account"
-  default     = "ml-perf-ksa"
 }
 
 variable "gcs_bucket" {

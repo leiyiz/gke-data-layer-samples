@@ -64,6 +64,7 @@ module "gke_standard" {
 
   # Storage configuration
   enable_gcs_fuse_csi_driver            = var.enable_gcs_fuse_csi_driver
+  workload_metadata_mode                = var.enable_gcs_fuse_csi_driver ? "GKE_METADATA" : "MODE_UNSPECIFIED"
   enable_gcp_filestore_csi_driver       = var.enable_gcp_filestore_csi_driver
   enable_gce_persistent_disk_csi_driver = var.enable_gce_persistent_disk_csi_driver
 
@@ -76,6 +77,7 @@ module "gke_standard" {
   cpu_auto_upgrade                      = var.cpu_auto_upgrade
   cpu_machine_type                      = var.cpu_machine_type
   cpu_disk_size_gb                      = var.cpu_disk_size_gb
+  cpu_disk_type                         = var.cpu_disk_type
   cpu_ephemeral_storage_local_ssd_count = var.cpu_ephemeral_storage_local_ssd_count
   cpu_local_nvme_ssd_block_count        = var.cpu_local_nvme_ssd_block_count
 
@@ -115,10 +117,12 @@ module "kubernetes" {
 
 module "service_accounts" {
   source = "./modules/service_accounts"
+  count  = var.enable_gcs_fuse_csi_driver ? 1 : 0
 
-  depends_on      = [module.kubernetes]
-  project_id      = var.project_id
-  namespace       = var.namespace
-  service_account = var.service_account
-  gcs_bucket      = var.gcs_bucket
+  depends_on          = [module.kubernetes]
+  project_id          = var.project_id
+  namespace           = var.namespace
+  service_account     = var.service_account
+  k8s_service_account = var.k8s_service_account
+  gcs_bucket          = var.gcs_bucket
 }

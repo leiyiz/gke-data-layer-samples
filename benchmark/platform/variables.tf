@@ -58,12 +58,19 @@ variable "enable_gce_persistent_disk_csi_driver" {
 variable "enable_gcs_fuse_csi_driver" {
   type        = bool
   description = "Set to true to enable gcs fuse csi driver for the cluster"
-  default     = true
+  default     = false
 }
+
 variable "gcs_bucket" {
   type        = string
   description = "GCS Bucket name"
   default     = "<your gcs bucket>"
+}
+
+variable "workload_metadata_mode" {
+  type        = string
+  description = "Metadata configuration to expose to workloads on the node pool"
+  default     = "MODE_UNSPECIFIED"
 }
 
 variable "service_account" {
@@ -122,7 +129,7 @@ variable "cpu_disk_size_gb" {
 
 variable "cpu_disk_type" {
   description = "Type of the node VM boot disk in the CPU NodePool"
-  default     = "pd-standard"
+  default     = "pd-balanced"
 }
 
 variable "cpu_ephemeral_storage_local_ssd_count" {
@@ -189,7 +196,7 @@ variable "gpu_disk_size_gb" {
 
 variable "gpu_disk_type" {
   description = "Type of the node VM boot disk in the GPU NodePool"
-  default     = "pd-standard"
+  default     = "pd-balanced"
 }
 
 variable "gpu_ephemeral_storage_local_ssd_count" {
