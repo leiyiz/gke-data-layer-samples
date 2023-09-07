@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image_segmentation-pytorch-deployment
+  namespace: perf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image_segmentation-pytorch-deployment
+  template:
+    metadata:
+      labels:
+        app: image_segmentation-pytorch-deployment
+      annotations:
+        gke-gcsfuse/volumes: "true"
+        gke-gcsfuse/cpu-limit: "10"
+        gke-gcsfuse/memory-limit: "200Gi"
+        gke-gcsfuse/ephemeral-storage-limit: "200Gi"
+    spec:
+      tolerations:
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
+      containers:
+      - name: image_segmentation-pytorch
+        image: mlcommons/image_segmentation:0.0.1
+        resources:
+          limits:
+            cpu: 48
+            memory: 600Gi
+            nvidia.com/gpu: "8"
+        command:  ["/bin/sh", "-c"]
+        args: ["sleep 9999999"]
+        env:
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        volumeMounts:
+        - name: gcp-gcs-csi-pvc
+#        - name: gcp-gcs-csi-ephemeral
+          mountPath: /data
+        - name: dshm
+          mountPath: /dev/shm
+      serviceAccountName: ml-perf-ksa
+      volumes:
+      - name: gcp-gcs-csi-pvc
+        persistentVolumeClaim:
+          claimName: gcp-gcs-csi-static-pvc
+      - name: dshm
+        emptyDir:
+          medium: Memory
+

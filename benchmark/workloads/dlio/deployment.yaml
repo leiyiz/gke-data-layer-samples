@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dlio-deployment
+  namespace: perf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dlio-deployment
+  template:
+    metadata:
+      labels:
+        app: dlio-deployment
+      annotations:
+        gke-gcsfuse/volumes: "true"
+        gke-gcsfuse/cpu-limit: "500m"
+        gke-gcsfuse/memory-limit: "30Gi"
+        gke-gcsfuse/ephemeral-storage-limit: "30Gi"
+    spec:
+      containers:
+      - name: dlio
+        image: zhenghh04/dlio:mlperf_storage_v0.5.1_amd64
+        resources:
+          limits:
+            cpu: 2
+            memory: 128Gi
+        command:  ["/bin/sh", "-c"]
+        args: ["sleep 9999999"]
+        env:
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        volumeMounts:
+        - name: gcp-gcs-csi-pvc
+          mountPath: /data
+        - name: dshm
+          mountPath: /dev/shm
+      serviceAccountName: ml-perf-ksa
+      volumes:
+      - name: gcp-gcs-csi-pvc
+        persistentVolumeClaim:
+          claimName: gcp-gcs-csi-static-pvc
+      - name: dshm
+        emptyDir:
+          medium: Memory
