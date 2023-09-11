@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-loader-job
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      name: data-loader-job
+      annotations:
+        gke-parallelstore/volumes: "true"
+        gke-parallelstore/cpu-limit: 1000m
+        gke-parallelstore/memory-limit: 5000Mi
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: data-loader
+        image: google/cloud-sdk:latest
+        env:
+          - name: BUCKET_NAME
+            value: <bucket-name>
+        command:
+          - "/bin/sh"
+          - "-c"
+          - gsutil -m cp -R gs://${BUCKET_NAME}/* /daos_disk/;
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: "1"
+            memory: 2Gi
+        volumeMounts:
+        - name: daos-pvc
+          mountPath: /daos_disk
+      serviceAccountName: ml-perf-ksa
+      volumes:
+      - name: daos-pvc
+        persistentVolumeClaim:
+          claimName: daos-pvc
