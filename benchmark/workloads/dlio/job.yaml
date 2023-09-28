@@ -11,17 +11,17 @@ spec:
         app: dlio-job
       annotations:
         gke-gcsfuse/volumes: "true"
-        gke-gcsfuse/cpu-limit: "500m"
-        gke-gcsfuse/memory-limit: "30Gi"
-        gke-gcsfuse/ephemeral-storage-limit: "30Gi"
+        gke-gcsfuse/cpu-limit: "48"
+        gke-gcsfuse/memory-limit: "20Gi"
+        gke-gcsfuse/ephemeral-storage-limit: "20Gi"
     spec:
       containers:
       - name: dlio
         image: zhenghh04/dlio:mlperf_storage_v0.5.1_amd64
         resources:
           limits:
-            cpu: 2
-            memory: 128Gi
+            cpu: 48
+            memory: 780Gi
         command: [ "/bin/sh", "-c" ]
         args: [ "<your command>" ]
         env:
@@ -30,15 +30,15 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         volumeMounts:
-        - name: gcp-gcs-csi-pvc
+        - name: ml-perf-volume
           mountPath: /data
         - name: dshm
           mountPath: /dev/shm
       serviceAccountName: ml-perf-ksa
       volumes:
-      - name: gcp-gcs-csi-pvc
+      - name: ml-perf-volume
         persistentVolumeClaim:
-          claimName: gcp-gcs-csi-static-pvc
+          claimName: ml-perf-pvc
       - name: dshm
         emptyDir:
           medium: Memory

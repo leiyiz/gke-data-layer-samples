@@ -33,11 +33,6 @@ variable "cluster_name" {
   description = "GKE cluster name"
 }
 
-variable "namespace" {
-  type        = string
-  description = "Kubernetes namespace where resources are deployed"
-}
-
 variable "enable_gcs_fuse_csi_driver" {
   type        = bool
   description = "Set to true to enable GCSFuse CSI driver for the cluster"

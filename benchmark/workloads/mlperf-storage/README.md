@@ -11,7 +11,7 @@ Preinstall the following on your computer:
 
 ### Run benchmark workload as a Deployment
 
-To interact with the tool, try commands, and test different configurations, you 
+To interact with the tool, try commands, and test different configurations, you
 can run the benchmark workload as a Deployment.
 
 1. Use the Terraform template in `benchmark/platform` to provision a cluster with
@@ -56,7 +56,7 @@ kubectl delete deployments.apps mlperf-deployment --namespace=perf
 
 ### Run benchmark workload as a Job
 
-You can run the benchmark workload as a job to run it periodically for regular 
+You can run the benchmark workload as a job to run it periodically for regular
 performance testing purposes.
 
 1. Use the Terraform template in `benchmark/platform` to provision a cluster with
@@ -84,10 +84,10 @@ all the other configurations are as default
 7. Run `kubectl describe jobs.batch mlperf-job --namespace=perf` to check the job
    status. Replace --namespace=<your name space> with your namespace.
 
-8. Your benchmark report is saved in the --results-dir directory. If you specify 
-a path on the GKE node, use the `gcloud compute ssh <node name>` command to connect to the node 
-and check the log. You can also specify the path with the GCS bucket that you mount 
-to your pod, and then you can find the logs in your GCS bucket.
+8. Your benchmark report is saved in the --results-dir directory. If you specify
+   a path on the GKE node, use the `gcloud compute ssh <node name>` command to connect to the node
+   and check the log. You can also specify the path with the GCS bucket that you mount
+   to your pod, and then you can find the logs in your GCS bucket.
 
 9. Delete the job when it completed.
 ```

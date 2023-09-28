@@ -18,11 +18,5 @@ data "http" "nvidia_driver_installer_manifest" {
 
 resource "kubectl_manifest" "nvidia_driver_installer" {
   yaml_body = data.http.nvidia_driver_installer_manifest.response_body
-  count = var.enable_gpu || var.enable_tpu ? 1:0
-}
-
-resource "kubernetes_namespace" "ml" {
-  metadata {
-    name = var.namespace
-  }
+  count     = var.enable_gpu || var.enable_tpu ? 1 : 0
 }

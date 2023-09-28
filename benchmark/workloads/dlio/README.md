@@ -20,7 +20,7 @@ can run the benchmark workload as a Deployment.
 enable_gcs_fuse_csi_driver=true
 gcs_bucket=<your gcs bucket>
 enable_cpu=true
-cpu_machine_type=n1-standard-96
+cpu_machine_type=n2-highmem-128
 ```
 all the other configurations are as default
 
@@ -65,7 +65,7 @@ performance testing purposes.
 enable_gcs_fuse_csi_driver=true
 gcs_bucket=<your gcs bucket>
 enable_cpu=true
-cpu_machine_type=n1-standard-96
+cpu_machine_type=n2-highmem-128
 ```
 all the other configurations are as default
 

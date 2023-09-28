@@ -36,12 +36,6 @@ variable "cluster_name" {
   default     = "ml-perf-cluster"
 }
 
-variable "namespace" {
-  type        = string
-  description = "Kubernetes namespace where resources are deployed"
-  default     = "perf"
-}
-
 variable "enable_gcp_filestore_csi_driver" {
   type        = bool
   description = "Set to true to enable Filestore CSI driver for the cluster"
@@ -54,35 +48,16 @@ variable "enable_gce_persistent_disk_csi_driver" {
   default     = false
 }
 
-# GCSFuse CSI Driver Configuration
 variable "enable_gcs_fuse_csi_driver" {
   type        = bool
   description = "Set to true to enable gcs fuse csi driver for the cluster"
   default     = false
 }
 
-variable "gcs_bucket" {
-  type        = string
-  description = "GCS Bucket name"
-  default     = "<your gcs bucket>"
-}
-
 variable "workload_metadata_mode" {
   type        = string
   description = "Metadata configuration to expose to workloads on the node pool"
   default     = "MODE_UNSPECIFIED"
-}
-
-variable "service_account" {
-  type        = string
-  description = "Google Cloud IAM service account for authenticating with GCP services"
-  default     = "ml-perf-sa"
-}
-
-variable "k8s_service_account" {
-  type        = string
-  description = "Kubernetes service account name as in the Configure access to Cloud Storage buckets using GKE Workload Identity step"
-  default     = "ml-perf-ksa"
 }
 
 # CPU node pool configuration

@@ -12,12 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-variable "enable_gpu" {
-  type        = bool
-  description = "Set to true to create GPU node pool, only one accelerator pool (GPU or TPU) will be created"
+resource "kubernetes_namespace" "ml" {
+  metadata {
+    name = var.namespace
+  }
 }
 
-variable "enable_tpu" {
-  type        = bool
-  description = "Set to true to create TPU node pool, only one accelerator pool (GPU or TPU) will be created"
-}

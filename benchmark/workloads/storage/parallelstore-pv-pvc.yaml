@@ -1,12 +1,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: daos-pvc
+  name: ml-perf-pvc
 spec:
   accessModes:
     - ReadWriteMany
   storageClassName: ""
-  volumeName: daos-pv
+  volumeName: ml-perf-pv
   resources:
     requests:
       storage: 12Ti
@@ -14,7 +14,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: daos-pv
+  name: ml-perf-pv
 spec:
   storageClassName: ""
   capacity:

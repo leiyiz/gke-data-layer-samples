@@ -15,8 +15,8 @@ spec:
       annotations:
         gke-gcsfuse/volumes: "true"
         gke-gcsfuse/cpu-limit: "10"
-        gke-gcsfuse/memory-limit: "200Gi"
-        gke-gcsfuse/ephemeral-storage-limit: "200Gi"
+        gke-gcsfuse/memory-limit: "20Gi"
+        gke-gcsfuse/ephemeral-storage-limit: "20Gi"
     spec:
       tolerations:
       - key: "nvidia.com/gpu"
@@ -29,7 +29,7 @@ spec:
         resources:
           limits:
             cpu: 48
-            memory: 600Gi
+            memory: 780Gi
             nvidia.com/gpu: "8"
         command:  ["/bin/sh", "-c"]
         args: ["sleep 9999999"]
@@ -39,17 +39,15 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         volumeMounts:
-        - name: gcp-gcs-csi-pvc
-#        - name: gcp-gcs-csi-ephemeral
+        - name: ml-perf-volume
           mountPath: /data
         - name: dshm
           mountPath: /dev/shm
       serviceAccountName: ml-perf-ksa
       volumes:
-      - name: gcp-gcs-csi-pvc
+      - name: ml-perf-volume
         persistentVolumeClaim:
-          claimName: gcp-gcs-csi-static-pvc
+          claimName: ml-perf-pvc
       - name: dshm
         emptyDir:
           medium: Memory
-
