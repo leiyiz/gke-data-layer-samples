@@ -4,7 +4,9 @@ metadata:
   name: dlio-job
   namespace: perf
 spec:
-  backoffLimit: 3
+  backoffLimit: 0
+  completions: 1
+  parallelism: 1
   template:
     metadata:
       labels:
@@ -22,9 +24,47 @@ spec:
           limits:
             cpu: 48
             memory: 780Gi
-        command: [ "/bin/sh", "-c" ]
-        args: [ "<your command>" ]
+        command:
+          - "/bin/sh"
+          - "-c"
+          - echo "freeing cache on node";
+            apt-get install procps;
+            free && sync && echo 3 > sudo /proc/sys/vm/drop_caches && free;
+            echo "cd'ing to benchmark folder";
+            cd ${DLIO_WORKSPACE};
+            echo 'running benchmark';
+            mpirun -np ${NUM_PROCESSORS} python main.py workload=unet3d ++workload.workflow.profiling=True ++workload.profiling.profiler=iostat ++workload.profiling.iostat_devices=${IOSTAT_DEVICES} ++workload.dataset.data_folder=${DATA_MOUNT} ++workload.dataset.num_files_train=${NUM_FILES} ++workload.dataset.record_length=${RECORD_LENGTH} ++workload.reader.batch_size=${BATCH_SIZE} ++workload.reader.read_threads=10 ++workload.train.epochs=${TRAIN_EPOCHS};
+            echo 'finding and unifying log folder';
+            shopt -s dotglob;
+            export OUTPUT_FOLDER=hydra_log/unified_output;
+            mkdir -p ${OUTPUT_FOLDER};
+            scp -r hydra_log/unet3d/*/* ${OUTPUT_FOLDER};
+            echo 'processing logs';
+            python postprocessor.py --output-folder ${OUTPUT_FOLDER};
+            rm ${OUTPUT_FOLDER}/\.*\.pfw;
+            echo 'copying results';
+            mkdir -p ${DATA_MOUNT}/${BENCHMARK_RESULT}/${MY_POD_NAME};
+            cp -r ${OUTPUT_FOLDER} ${DATA_MOUNT}/${BENCHMARK_RESULT}/${MY_POD_NAME};
+            echo 'done';
         env:
+        - name: DLIO_WORKSPACE
+          value: /workspace/dlio/src
+        - name: NUM_PROCESSORS
+          value: '8'
+        - name: DATA_MOUNT
+          value: /data
+        - name: BENCHMARK_RESULT
+          value: leiyiz/150gi_1_pod_small
+        - name: RECORD_LENGTH
+          value: '3000000'
+        - name: NUM_FILES
+          value: '50000'
+        - name: BATCH_SIZE
+          value: '200'
+        - name: TRAIN_EPOCHS
+          value: '5'
+        - name: IOSTAT_DEVICES
+          value: '[md0]'
         - name: MY_POD_NAME
           valueFrom:
             fieldRef:
